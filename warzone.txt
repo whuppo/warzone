@@ -1,0 +1,5 @@
+"warzone"
+{
+	"base"	"base"
+	"title"	"warzone"
+}
