@@ -6,6 +6,7 @@ surface.CreateFont( "SecondaryAmmo",   { font = "Exo 2", size = 40 } )
 surface.CreateFont( "SecondaryAmmoBG", { font = "Exo 2", size = 40, blursize = 6 } )
 
 local gradientV = Material( "gui/gradient_up" )
+local gradientV2 = Material( "gui/gradient_down" )
 
 local HideHUD = {
 	CHudHealth = true,
@@ -18,7 +19,8 @@ local HideHUD = {
 local hpdrain = {
 	h = 0,
 	w = 0,
-	delay = 50
+	delay = 50,
+	regen = 0
 }
 
 local currentammo = {
@@ -67,12 +69,12 @@ hook.Add( "HUDPaint", "cl_hud", function()
 	surface.DrawRect( ScrW() - 303, ScrH() - 106, 232, 10 )
 
 	surface.SetDrawColor( Color( 255, 255, 255, 255 ) )
-	surface.DrawRect( ScrW() - 303 + ( 231 - ( 231 * ( currenthp / 100 ) ) ), ScrH() - 106, 232 - ( 231 - ( 231 * ( currenthp / 100 ) ) ), 10 )
+	surface.DrawRect( ScrW() - 303 + ( 232 - ( 232 * ( currenthp / 100 ) ) ), ScrH() - 106, 232 - ( 232 - ( 232 * ( currenthp / 100 ) ) ), 10 )
 	
 	if hpdrain.w > currenthp then
 		surface.SetDrawColor( Color( 200, 0, 0, 255 ) )
 		surface.SetMaterial( gradientV )
-		surface.DrawTexturedRect( ScrW() - 303 + ( 231 - ( 231 * ( hpdrain.w / 100 ) ) ), ScrH() - 96 - hpdrain.h, 232 - ( 231 - ( 231 * ( hpdrain.w / 100 ) ) ) - ( 231 * ( currenthp / 100 ) ), hpdrain.h )
+		surface.DrawTexturedRect( ScrW() - 303 + ( 232 - ( 232 * ( hpdrain.w / 100 ) ) ), ScrH() - 96 - hpdrain.h, 232 - ( 232 - ( 232 * ( hpdrain.w / 100 ) ) ) - ( 232 * ( currenthp / 100 ) ), hpdrain.h )
 	end
 
 	surface.SetDrawColor( Color( 255, 255, 255, 255 ) )
@@ -82,6 +84,22 @@ hook.Add( "HUDPaint", "cl_hud", function()
 		draw.SimpleText( LocalPlayer():Health() .. " HEALTH", "HealthBG", ScrW() - 74, ScrH() - 94, Color( 0, 0, 0, 255 ), TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP )
 	end
 	draw.SimpleText( LocalPlayer():Health() .. " HEALTH", "Health", ScrW() - 74, ScrH() - 94, Color( 255, 255, 255, 200 ), TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP )
+
+	--draw.SimpleText( LocalPlayer():GetNWFloat( "NextRegen" ), "Health", ScrW() / 2, ScrH() / 2, Color( 255, 255, 255, 200 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+
+	if LocalPlayer():GetNWFloat( "NextRegen" ) then
+		surface.SetDrawColor( Color( 255, 255, 0, 255 ) )
+		surface.SetMaterial( gradientV2 )
+		surface.DrawTexturedRect( ScrW() - 303 + ( 232 - ( 232 * ( ( LocalPlayer():GetNWFloat( "NextRegen" )- CurTime() ) / 5 ) ) ), ScrH() - 96, 232 - ( 232 - ( 232 * ( ( LocalPlayer():GetNWFloat( "NextRegen" ) - CurTime() ) / 5 ) ) ), 20 )
+	end
+
+	if LocalPlayer():GetNWFloat( "NextRegen" ) ~= 0 and LocalPlayer():GetNWFloat( "NextRegen" ) <= CurTime() then
+		hpdrain.regen = 1
+	end
+
+	surface.SetDrawColor( Color( 255, 255, 0, 255 * hpdrain.regen ) )
+	hpdrain.regen = Lerp( FrameTime() * 10/3, hpdrain.regen, 0 )
+	surface.DrawRect( ScrW() - 303, ScrH() - 106, 232, 12 )
 
 	--Ammo Counter (version 1)
 	/*
@@ -133,7 +151,7 @@ hook.Add( "HUDPaint", "cl_hud", function()
 		end
 
 		if currentammo.clip < currentammo.clipsize / 2 then
-			for i = 0, 4 do
+			for i = 0, 1 do
 				draw.SimpleText( currentammo.warning, "HealthBG", ScrW() - 306, ScrH() - 144, Color( 0, 0, 0, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
 			end
 			draw.SimpleText( currentammo.warning, "Health", ScrW() - 306, ScrH() - 144, Color( 255, 128 * ( math.sin( RealTime() * 6 ) * 0.5 + 0.5 ), 128 * ( math.sin( RealTime() * 6 ) * 0.5 + 0.5 ), 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
