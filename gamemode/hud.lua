@@ -23,6 +23,13 @@ local hpdrain = {
 	regen = 0
 }
 
+local ardrain = {
+	h = 0,
+	w = 0,
+	delay = 50,
+	regen = 0
+}
+
 local currentammo = {
 	clip = 0,
 	clipsize = 0,
@@ -32,7 +39,7 @@ local currentammo = {
 
 usermessage.Hook( "damage", function( msg )
 	local dmg = msg:ReadShort()
-
+	ardrain.delay = dmg * 5/3
 	hpdrain.delay = dmg * 5/3
 end )
 
@@ -77,6 +84,40 @@ hook.Add( "HUDPaint", "cl_hud", function()
 		surface.DrawTexturedRect( ScrW() - 303 + ( 232 - ( 232 * ( hpdrain.w / 100 ) ) ), ScrH() - 96 - hpdrain.h, 232 - ( 232 - ( 232 * ( hpdrain.w / 100 ) ) ) - ( 232 * ( currenthp / 100 ) ), hpdrain.h )
 	end
 
+	//Armor
+	local currentar = LocalPlayer():Armor()
+	currentar = math.Clamp( currentar, 0, 100 )
+
+	if ardrain.w > currentar then
+		if ardrain.delay <= 0 then
+			ardrain.w = Lerp( FrameTime() * 2, ardrain.w, currentar )
+		else
+		    ardrain.delay = ardrain.delay - 1
+		end
+	elseif ardrain.w > currentar + 0.1 then
+		ardrain.w = currentar
+		ardrain.delay = 50
+	else
+	    ardrain.w = currentar
+		ardrain.delay = 50
+	end
+
+	if ardrain.w > currentar + 1 then
+		ardrain.h = 20
+	else
+	    ardrain.h = Lerp( FrameTime() * 5, ardrain.h, 0 )
+	end
+
+	surface.SetDrawColor( Color( 0, 255, 255, 200 ) )
+	surface.DrawRect( ScrW() - 303 + ( 232 - ( 232 * ( currentar / 100 ) ) ), ScrH() - 106, 232 - ( 232 - ( 232 * ( currentar / 100 ) ) ), 10 )
+	
+	if ardrain.w > currentar then
+		surface.SetDrawColor( Color( 200, 0, 0, 255 ) )
+		surface.SetMaterial( gradientV )
+		surface.DrawTexturedRect( ScrW() - 303 + ( 232 - ( 232 * ( ardrain.w / 100 ) ) ), ScrH() - 96 - ardrain.h, 232 - ( 232 - ( 232 * ( ardrain.w / 100 ) ) ) - ( 232 * ( currenthp / 100 ) ), hpdrain.h )
+	end
+
+	//measuring thing
 	surface.SetDrawColor( Color( 255, 255, 255, 255 ) )
 	surface.DrawRect( ScrW() - 303, ScrH() - 96, 232, 2 )
 
@@ -88,7 +129,7 @@ hook.Add( "HUDPaint", "cl_hud", function()
 	--draw.SimpleText( LocalPlayer():GetNWFloat( "NextRegen" ), "Health", ScrW() / 2, ScrH() / 2, Color( 255, 255, 255, 200 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
 
 	if LocalPlayer():GetNWFloat( "NextRegen" ) then
-		surface.SetDrawColor( Color( 255, 255, 0, 255 ) )
+		surface.SetDrawColor( Color( 0, 255, 255, 255 ) )
 		surface.SetMaterial( gradientV2 )
 		surface.DrawTexturedRect( ScrW() - 303 + ( 232 - ( 232 * ( ( LocalPlayer():GetNWFloat( "NextRegen" )- CurTime() ) / 5 ) ) ), ScrH() - 96, 232 - ( 232 - ( 232 * ( ( LocalPlayer():GetNWFloat( "NextRegen" ) - CurTime() ) / 5 ) ) ), 20 )
 	end
@@ -97,7 +138,7 @@ hook.Add( "HUDPaint", "cl_hud", function()
 		hpdrain.regen = 1
 	end
 
-	surface.SetDrawColor( Color( 255, 255, 0, 255 * hpdrain.regen ) )
+	surface.SetDrawColor( Color( 0, 255, 255, 255 * hpdrain.regen ) )
 	hpdrain.regen = Lerp( FrameTime() * 10/3, hpdrain.regen, 0 )
 	surface.DrawRect( ScrW() - 303, ScrH() - 106, 232, 12 )
 

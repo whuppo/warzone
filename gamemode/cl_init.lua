@@ -1,6 +1,7 @@
 include( "shared.lua" )
 include( "hud.lua" )
 include( "cl_feed.lua" )
+include( "cl_scoreboard.lua" )
 
 /*
 function GM:HUDWeaponPickedUp( wep )
