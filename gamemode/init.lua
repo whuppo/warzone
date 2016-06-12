@@ -15,6 +15,10 @@ end
 hook.Add( "PlayerSpawn", "PlayerSpawn", function( ply )
 	ply:SetModel( "models/player/group03/male_01.mdl" )
 	ply:SetArmor(100)
+
+	if ply:IsBot() then
+		ply:SetTeam( 2 )
+	end
 end )
 
 hook.Add( "PlayerSay", "chat_debug", function( ply, txt, teamChat )

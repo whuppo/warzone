@@ -936,4 +936,8 @@ if ( SERVER ) then
 	resource.AddFile( "sound/tfa_csgo/xm1014/xm1014-1.wav" )
 	resource.AddFile( "sound/tfa_csgo/xm1014/xm1014_draw.wav" )
 	resource.AddFile( "sound/tfa_csgo/xm1014/xm1014_insertshell.wav" )
+
+	resource.AddFile( "materials/warzone/blueteam.png" )
+	resource.AddFile( "materials/warzone/redteam.png" )
+	resource.AddFile( "materials/warzone/warzone.png" )
 end
