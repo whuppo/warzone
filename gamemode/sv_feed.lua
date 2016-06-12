@@ -21,3 +21,11 @@ hook.Add( "OnNPCKilled", "NPCNotifciation", function( npc, ply, inf )
 		} )
 	end
 end )
+
+hook.Add( "PlayerDeath", "PlyKillNotification", function( plyV, wep, plyA)
+	if plyV:IsPlayer() and wep:IsValid() and plyA:IsPlayer() and plyV != plyA then
+		plyA:SendNotice( plyV:Name(), Color( 0, 64, 128, 200 ), {
+			{ name = "Player Kill", points = 100, epic = 0 }
+		} )
+	end
+end )
