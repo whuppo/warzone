@@ -11,7 +11,6 @@ local playerlistblue
 local blueteamico = Material( "warzone/blueteam.png", "smooth mips" )
 local redteamico  = Material( "warzone/redteam.png", "smooth mips" )
 local warzoneico  = Material( "warzone/warzone.png", "smooth mips" )
-local blurTex = Material( "pp/blurscreen" )
 
 local TeamColor = {}
 TeamColor.red = {

@@ -3,10 +3,12 @@ AddCSLuaFile( "shared.lua" )
 AddCSLuaFile( "hud.lua" )
 AddCSLuaFile( "cl_feed.lua" )
 AddCSLuaFile( "cl_scoreboard.lua" )
+AddCSLuaFile( "cl_inventory.lua" )
 
 include( "shared.lua" )
 include( "resources.lua" )
 include( "sv_feed.lua" )
+include( "sv_inventory.lua" )
 
 function GM:GetFallDamage( ply, speed )
 	return 0

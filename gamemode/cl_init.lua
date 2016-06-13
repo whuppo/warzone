@@ -2,6 +2,7 @@ include( "shared.lua" )
 include( "hud.lua" )
 include( "cl_feed.lua" )
 include( "cl_scoreboard.lua" )
+include( "cl_inventory.lua" )
 
 /*
 function GM:HUDWeaponPickedUp( wep )
