@@ -50,6 +50,8 @@ function InventoryMenu()
 			item.name   = v.name
 			item.rarity = v.rarity
 			item.class  = v.class
+			item.mods   = v.mods or nil
+
 			function item:Paint()
 				surface.SetDrawColor( 0, 0, 0, 200 )
 				surface.DrawRect( 0, 0, item:GetSize() )
@@ -97,10 +99,12 @@ function InventoryMenu()
 				replacepri:SetText( "Replace " .. curr.primary .. " with " .. item.name )
 				replacepri.DoClick = function()
 					curr.primary = item.class
+					curr.primarymods = item.mods or {}
 
 					net.Start( "wz_loadout" )
+						net.WriteString( "primary" )
 						net.WriteString( curr.primary )
-						net.WriteString( curr.secondary )
+						net.WriteTable( curr.primarymods )
 					net.SendToServer()
 					itemdetail:Close()
 				end
@@ -111,10 +115,12 @@ function InventoryMenu()
 				replacesec:SetText( "Replace " .. curr.secondary .. " with " .. item.name )
 				replacesec.DoClick = function()
 					curr.secondary = item.class
+					curr.secondarymods = item.mods or {}
 
 					net.Start( "wz_loadout" )
-						net.WriteString( curr.primary )
+						net.WriteString( "secondary" )
 						net.WriteString( curr.secondary )
+						net.WriteTable( curr.secondarymods )
 					net.SendToServer()
 					itemdetail:Close()
 				end
